@@ -94,3 +94,24 @@ func TestLogIntoFile(t *testing.T) {
 
 	file.Close()
 }
+
+func TestDefaultSpec(t *testing.T) {
+	opt := logging.Option{
+		Module:         "blockchain",
+		FilterLevel:    logging.DebugLevel,
+		Spec:           "%{color}%{level}[%{time}] [%{module}]%{color:reset}: %{message}",
+		FormatSelector: "json",
+		Writer:         os.Stdout,
+	}
+	logger, err := logging.NewLogger(opt)
+	if err != nil {
+		panic(err)
+	}
+
+	logger.SetModule("consensus", logging.InfoLevel)
+	consensusLogger := logger.DeriveChildLogger("consensus")
+	consensusLogger.Update(logging.Option{
+		Spec: "%{level}[%{time}] [%{module}]: %{message}",
+	})
+	consensusLogger.Info("info message", "key", "value")
+}

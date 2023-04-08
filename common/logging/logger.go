@@ -90,6 +90,9 @@ func (l *logger) Update(opt Option) error {
 	}
 	if opt.FilterLevel != 0 {
 		l.filterLevel = opt.FilterLevel
+		if l.module != "" {
+			l.modules[l.module] = l.filterLevel
+		}
 	}
 	if opt.Spec != "" {
 		formatters, err := ParseFormat(opt.Spec)
