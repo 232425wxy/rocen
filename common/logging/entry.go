@@ -7,9 +7,11 @@ import (
 )
 
 type Entry struct {
-	level   LogLevel
-	time    time.Time
-	module  string
-	call    stack.Call
-	message string
+	Level          LogLevel
+	Time           time.Time
+	Module         string
+	Call           stack.Call
+	Message        string
+	KeyValues      []interface{}
+	FormatSelector string
 }
