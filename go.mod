@@ -5,4 +5,5 @@ go 1.14
 require (
 	github.com/go-stack/stack v1.8.1
 	github.com/stretchr/testify v1.8.2
+	golang.org/x/crypto v0.8.0
 )

@@ -46,6 +46,7 @@ func TestColor(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
 			fmt.Fprint(buf, test.level.SpecifiedColor().Color(), test.message, logging.ResetColor()+"\n")
+			t.Log("")
 		})
 	}
 	fmt.Print(buf.String())

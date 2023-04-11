@@ -25,3 +25,50 @@
 ### 1.3 PEM 数据编码
 
 `PEM` 格式通常用于数字证书认证机构（Certificate Authorities，CA），扩展名为 `.pem`，`.crt`，`.cer` 和 `.key`。内容为 `Base64` 编码的 `ASCII` 码文件，有类似 `"-----BEGIN CERTIFICATE-----"` 和 `"-----END CERTIFICATE-----"` 的头尾标记。服务器认证证书，中级认证证书和私钥都可以储存为 `PEM` 格式（认证证书其实就是公钥）。`Apache` 和类似的服务器使用 `PEM` 格式证书。
+
+### 1.4 SHA2 和 SHA3
+
+`SHA3` 也称为 `Keccak`，是一种全新的哈希算法，与 `SHA1` 和 `SHA2` 无关。`SHA3` 一开始是一次 `NIST` 竞赛设置的名字，谁能获得第一，设就能将自己的算法名字更改为 `SHA3`。最终，`Keccak` 算法获胜了。`NIST` 之所以选择 `Keccak`，其中一个明确的理由是它与现有的 `SHA1` 和 `SHA2` 算法不一样；有人指出，这种差异性使其可以更好地补充现有的 `SHA2` 算法(`SHA2` 仍被 `NIST` 认为是安全的，并由 `NIST` 推荐)。
+
+### 1.5 ECDSA 签名
+
+`ECDSA` 是 `ECC` 与 `DSA` 的结合，整个签名过程与 `DSA` 类似，所不一样的是签名中采取的算法为 `ECC`，最后签名出来的值也是分为 `r` 和 `s`。
+
+**参数构造**
+
+选择一条椭圆曲线 `E`，基点为 `G`，阶为 `N`。
+
+私钥：`k`；公钥：`K=kG`。
+
+**签名过程**
+
+选择一个随机数 `r (r < N)`，计算点 `R=rG`；将原数据 `m` 和点 `R` 的坐标值 `x,y` 作为参数，计算哈希值 `h = H(m,x,y)`；计算 `s = r - h * k`，将 `r` 和 `s` 作为签名发送给验签者，如果 `r` 和 `s` 其中有一个等于 `0`，则从选择一个随机数 `r` 开始，重新计算签名。
+
+**验签过程**
+
+验签者在收到消息 `m` 和签名 `(r,s)` 后，进行以下运算：
+
+1. 计算点 `R' = rG`，得到点 `R'` 的坐标 `(x',y')`；
+2. 验证等式 `sG + H(m,x',y')K = R'` 是否成立，如果等式成立，则签名正确。
+
+
+## 2 用法
+
+### 2.1 AES 加密
+
+**生成密钥**
+```go
+key := make([]byte, 32)
+rand.Reader.Read(key) // 随机生成一个 32 比特的字节切片，作为 AES 的密钥。
+```
+
+**加密**
+```go
+plaintext := []byte("plain text")
+encrypted, err := sw.AESCBCPKCS7Encrypt(key, plaintext)
+```
+
+**解密**
+```go
+decrypted, err := sw.AESCBCPKCS7Decrypt(key, encrypted)
+```
