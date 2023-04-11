@@ -9,34 +9,34 @@ import (
 )
 
 func TestColor(t *testing.T) {
-	var tests = []struct{
-		desc string
-		level logging.LogLevel
+	var tests = []struct {
+		desc    string
+		level   logging.LogLevel
 		message string
 	}{
 		{
-			desc: "debug",
-			level: logging.DebugLevel,
+			desc:    "debug",
+			level:   logging.DebugLevel,
 			message: "output debug level log",
 		},
 		{
-			desc: "info",
-			level: logging.InfoLevel,
+			desc:    "info",
+			level:   logging.InfoLevel,
 			message: "output info level log",
 		},
 		{
-			desc: "warn",
-			level: logging.WarnLevel,
+			desc:    "warn",
+			level:   logging.WarnLevel,
 			message: "output warn level log",
 		},
 		{
-			desc: "error",
-			level: logging.ErrorLevel,
+			desc:    "error",
+			level:   logging.ErrorLevel,
 			message: "output error level log",
 		},
 		{
-			desc: "panic",
-			level: logging.PanicLevel,
+			desc:    "panic",
+			level:   logging.PanicLevel,
 			message: "output panic level log",
 		},
 	}
@@ -45,7 +45,7 @@ func TestColor(t *testing.T) {
 	buf.Reset()
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
-			fmt.Fprint(buf, test.level.SpecifiedColor().Color(), test.message, logging.ResetColor() + "\n")
+			fmt.Fprint(buf, test.level.SpecifiedColor().Color(), test.message, logging.ResetColor()+"\n")
 		})
 	}
 	fmt.Print(buf.String())

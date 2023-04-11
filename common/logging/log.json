@@ -1,0 +1,4 @@
+{"time":"2023-04-11T12:37:33.31+08:00","module":"blockchain","message":"debug", "name":"wuxiangyu", "age":"18"}
+{"time":"2023-04-11T12:37:33.31+08:00","module":"blockchain","message":"info", "name":"wuxiangyu", "age":"18"}
+{"time":"2023-04-11T12:37:33.311+08:00","module":"blockchain","message":"warn", "name":"wuxiangyu", "age":"18"}
+{"time":"2023-04-11T12:37:33.311+08:00","module":"blockchain","message":"error", "name":"wuxiangyu", "age":"18"}

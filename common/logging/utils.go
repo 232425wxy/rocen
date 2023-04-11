@@ -9,7 +9,7 @@ import (
 func toString(x interface{}) string {
 	rv := reflect.ValueOf(x)
 
-	for rv.Kind() == reflect.Pointer {
+	for rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()
 	}
 
