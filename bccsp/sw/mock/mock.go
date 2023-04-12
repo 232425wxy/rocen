@@ -136,7 +136,7 @@ type KeyDeriver struct {
 	Err   error
 }
 
-func (kd *KeyDeriver) KeyDeriv(k bccsp.Key, opts bccsp.KeyDeriveOpts) (dk bccsp.Key, err error) {
+func (kd *KeyDeriver) KeyDerive(k bccsp.Key, opts bccsp.KeyDeriveOpts) (dk bccsp.Key, err error) {
 	if !reflect.DeepEqual(kd.KeyArg, k) {
 		return nil, errors.New("invalid key")
 	}
