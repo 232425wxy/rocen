@@ -8,6 +8,11 @@ import (
 	"math/big"
 )
 
+// ECDSASignature 表示椭圆曲线签名，假设签名私钥是 x，待签名的消息是 m，签名的生成过程如下：
+//  1. 随机选择一个整数 r，计算 r·G=(X_R,X_Y)，让 R=X_R；
+//  2. 计算 e=H(m)；
+//  3. 计算 s=r^(-1)·(e+x·R)，让 S=s；
+//  4. 得到签名 (R,S)
 type ECDSASignature struct {
 	R, S *big.Int
 }

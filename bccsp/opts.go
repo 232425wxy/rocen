@@ -260,21 +260,21 @@ type AESCBCPKCS7ModeOpts struct {
 ///////////////////////////////////////////////////////////////////
 // HMAC
 
-type HMACDeriveKeyOpts struct {
+type HMACDerivKeyOpts struct {
 	Temporary bool
 	Arg       []byte
 }
 
 // Algorithm 返回 "HMAC"。
-func (opts *HMACDeriveKeyOpts) Algorithm() string {
+func (opts *HMACDerivKeyOpts) Algorithm() string {
 	return HMAC
 }
 
-func (opts *HMACDeriveKeyOpts) Ephemeral() bool {
+func (opts *HMACDerivKeyOpts) Ephemeral() bool {
 	return opts.Temporary
 }
 
-func (opts *HMACDeriveKeyOpts) Argument() []byte {
+func (opts *HMACDerivKeyOpts) Argument() []byte {
 	return opts.Arg
 }
 
@@ -294,21 +294,21 @@ func (opts *HMACImportKeyOpts) Ephemeral() bool {
 ///////////////////////////////////////////////////////////////////
 // HMACTruncated256
 
-type HMACTruncated256AESDeriveKeyOpts struct {
+type HMACTruncated256AESDerivKeyOpts struct {
 	Temporary bool
 	Arg       []byte
 }
 
 // Algorithm 返回 "HMACTruncated256"。
-func (opts *HMACTruncated256AESDeriveKeyOpts) Algorithm() string {
+func (opts *HMACTruncated256AESDerivKeyOpts) Algorithm() string {
 	return HMACTruncated256
 }
 
-func (opts *HMACTruncated256AESDeriveKeyOpts) Ephemeral() bool {
+func (opts *HMACTruncated256AESDerivKeyOpts) Ephemeral() bool {
 	return opts.Temporary
 }
 
-func (opts *HMACTruncated256AESDeriveKeyOpts) Argument() []byte {
+func (opts *HMACTruncated256AESDerivKeyOpts) Argument() []byte {
 	return opts.Arg
 }
 
@@ -510,8 +510,8 @@ type IdemixAttribute struct {
 
 type IdemixCredentialSignerOpts struct {
 	Attributes []IdemixAttribute
-	IssuerPK Key
-	Hash crypto.Hash
+	IssuerPK   Key
+	Hash       crypto.Hash
 }
 
 func (opts *IdemixCredentialSignerOpts) HashFunc() crypto.Hash {
@@ -542,7 +542,7 @@ type IdemixSignerOpts struct {
 	Epoch int
 	// RevocationPublicKey 是撤销的公钥。
 	RevocationPublicKey Key
-	Hash crypto.Hash
+	Hash                crypto.Hash
 }
 
 func (opts *IdemixSignerOpts) HashFunc() crypto.Hash {
@@ -550,9 +550,9 @@ func (opts *IdemixSignerOpts) HashFunc() crypto.Hash {
 }
 
 type IdemixNymSignerOpts struct {
-	Nym Key
+	Nym      Key
 	IssuerPK Key
-	Hash crypto.Hash
+	Hash     crypto.Hash
 }
 
 func (opts *IdemixNymSignerOpts) HashFunc() crypto.Hash {
@@ -560,10 +560,10 @@ func (opts *IdemixNymSignerOpts) HashFunc() crypto.Hash {
 }
 
 type IdemixCRISignerOpts struct {
-	Epoch int
+	Epoch               int
 	RevocationAlgorithm RevocationAlgorithm
-	UnrevokedHandles [][]byte
-	Hash crypto.Hash
+	UnrevokedHandles    [][]byte
+	Hash                crypto.Hash
 }
 
 func (opts *IdemixCRISignerOpts) HashFunc() crypto.Hash {

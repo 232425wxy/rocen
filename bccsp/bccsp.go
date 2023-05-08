@@ -20,7 +20,7 @@ type KeyGenOpts interface {
 	Ephemeral() bool
 }
 
-type KeyDeriveOpts interface {
+type KeyDerivOpts interface {
 	// Algorithm 返回密钥派生算法的标识符。
 	Algorithm() string
 	Ephemeral() bool
@@ -47,7 +47,7 @@ type DecrypterOpts interface{}
 
 type BCCSP interface {
 	KeyGen(opts KeyGenOpts) (key Key, err error)
-	KeyDerive(key Key, opts KeyDeriveOpts) (dk Key, err error)
+	KeyDeriv(key Key, opts KeyDerivOpts) (dk Key, err error)
 	KeyImport(raw interface{}, opts KeyImportOpts) (key Key, err error)
 	GetKey(ski []byte) (key Key, err error)
 	Hash(msg []byte, opts HashOpts) ([]byte, error)

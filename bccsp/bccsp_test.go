@@ -83,14 +83,14 @@ func TestHashOpts(t *testing.T) {
 }
 
 func TestHMAC(t *testing.T) {
-	opts := &HMACTruncated256AESDeriveKeyOpts{Arg: []byte("arg")}
+	opts := &HMACTruncated256AESDerivKeyOpts{Arg: []byte("arg")}
 	require.False(t, opts.Ephemeral())
 	opts.Temporary = true
 	require.True(t, opts.Ephemeral())
 	require.Equal(t, "HMAC_TRUNCATED_256", opts.Algorithm())
 	require.Equal(t, []byte("arg"), opts.Argument())
 
-	opts2 := &HMACDeriveKeyOpts{Arg: []byte("arg")}
+	opts2 := &HMACDerivKeyOpts{Arg: []byte("arg")}
 	require.False(t, opts2.Ephemeral())
 	opts2.Temporary = true
 	require.True(t, opts2.Ephemeral())

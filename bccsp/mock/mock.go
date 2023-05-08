@@ -37,7 +37,7 @@ func (*MockBCCSP) KeyGen(opts bccsp.KeyGenOpts) (bccsp.Key, error) {
 	panic("Not yet implemented")
 }
 
-func (*MockBCCSP) KeyDeriv(k bccsp.Key, opts bccsp.KeyDeriveOpts) (bccsp.Key, error) {
+func (*MockBCCSP) KeyDeriv(k bccsp.Key, opts bccsp.KeyDerivOpts) (bccsp.Key, error) {
 	panic("Not yet implemented")
 }
 
