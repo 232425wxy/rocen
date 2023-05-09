@@ -59,6 +59,7 @@ type ecdsaPublicKey struct {
 var _ = bccsp.Key(&ecdsaPublicKey{})
 
 func (key *ecdsaPublicKey) Bytes() ([]byte, error) {
+	// 序列化后的结果是人类不可读的值。
 	return x509.MarshalPKIXPublicKey(key.publicKey)
 }
 

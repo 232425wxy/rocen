@@ -30,10 +30,118 @@ type fileBasedKeyStore struct {
 	mu       sync.Mutex
 }
 
-// func NewFileBasedKeyStore(pwd []byte, path string, readOnly bool) (bccsp.KeyStore, error) {
+///////////////////////////////////////////////////////////////////
+// NewFileBasedKeyStore 新建一个存储密钥的 KeyStore。
+func NewFileBasedKeyStore(pwd []byte, path string, readOnly bool) (bccsp.KeyStore, error) {
+	ks := new(fileBasedKeyStore)
+	return ks, ks.Init(pwd, path, readOnly)
+}
 
-// }
+///////////////////////////////////////////////////////////////////
+// Init
+func (ks *fileBasedKeyStore) Init(pwd []byte, path string, readOnly bool) error {
+	if len(path) == 0 {
+		return errors.New("invalid KeyStore path, it must be different from \"\"")
+	}
 
+	ks.mu.Lock()
+	defer ks.mu.Unlock()
+
+	if ks.isOpen {
+		return errors.New("KeyStore is already initialized")
+	}
+
+	ks.path = path
+
+	clone := make([]byte, len(pwd))
+	copy(clone, pwd)
+	ks.pwd = clone
+	ks.readOnly = readOnly
+
+	exists, err := dirExists(path)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		err = ks.createKeyStore()
+		if err != nil {
+			return err
+		}
+		return ks.openKeyStore()
+	}
+
+	empty, err := dirEmpty(path)
+	if err != nil {
+		return err
+	}
+	if empty {
+		err = ks.createKeyStore()
+		if err != nil {
+			return err
+		}
+	}
+
+	return ks.openKeyStore()
+}
+
+///////////////////////////////////////////////////////////////////
+// ReadOnly 返回一个布尔值，判断 KeyStore 是否是只读的。
+func (ks *fileBasedKeyStore) ReadOnly() bool {
+	return ks.readOnly
+}
+
+///////////////////////////////////////////////////////////////////
+// LoadKey 从 KeyStore 中加载与 SKI 对应的密钥。
+func (ks *fileBasedKeyStore) LoadKey(ski []byte) (bccsp.Key, error) {
+	if len(ski) == 0 {
+		return nil, errors.New("invalid SKI, it must be different from nil")
+	}
+
+	alias := hex.EncodeToString(ski)
+	suffix := ks.getSuffix(alias)
+
+	switch suffix {
+	case "key":
+		// AES 密钥
+		key, err := ks.loadAESKey(alias)
+		if err != nil {
+			return nil, fmt.Errorf("failed loading key [%s]: [%s]", alias, err)
+		}
+		return &aesKey{key: key, exportable: false}, nil
+	case "sk":
+		// ECDSA 私钥
+		key, err := ks.loadPrivateKey(alias)
+		if err != nil {
+			return nil, fmt.Errorf("failed loading private key [%s]: [%s]", alias, err)
+		}
+
+		switch k := key.(type) {
+		case *ecdsa.PrivateKey:
+			return &ecdsaPrivateKey{privateKey: k}, nil
+		default:
+			return nil, errors.New("private key type not recognised")
+		}
+	case "pk":
+		// ECDSA 公钥
+		key, err := ks.loadPublicKey(alias)
+		if err != nil {
+			return nil, fmt.Errorf("failed loading public key [%s]: [%s]", alias, err)
+		}
+
+		switch k := key.(type) {
+		case *ecdsa.PublicKey:
+			return &ecdsaPublicKey{publicKey: k}, nil
+		default:
+			return nil, errors.New("public key type not recognised")
+		}
+	default:
+		return ks.searchKeystoreForSKI(ski)
+	}
+}
+
+///////////////////////////////////////////////////////////////////
+// StoreKey 存储密钥，支持存储 ECDSA 的公钥、私钥和 AES 的密钥，其他的
+// 不支持。
 func (ks *fileBasedKeyStore) StoreKey(key bccsp.Key) (err error) {
 	if ks.readOnly {
 		return errors.New("KeyStore is read only")
