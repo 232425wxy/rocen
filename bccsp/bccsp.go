@@ -10,6 +10,7 @@ type Key interface {
 	SKI() []byte
 	// Symmetric 方法返回 true 的话，则代表该密钥是对称密钥，否则是非对称密钥。
 	Symmetric() bool
+	// Private 想看看这个密钥是不是私钥。
 	Private() bool
 	PublicKey() (Key, error)
 }

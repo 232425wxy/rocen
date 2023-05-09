@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/232425wxy/rocen/common/logging"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -114,4 +115,21 @@ func TestDefaultSpec(t *testing.T) {
 		Spec: "%{level}[%{time}] [%{module}]: %{message}",
 	})
 	consensusLogger.Info("info message", "key", "value")
+}
+
+func TestLogFormat(t *testing.T) {
+	opt := logging.Option{
+		Module:         "blockchain",
+		FilterLevel:    logging.DebugLevel,
+		Spec:           "%{color}%{level}[%{time}] [%{module}]%{color:reset}: %{message}",
+		FormatSelector: "json",
+		Writer:         os.Stdout,
+	}
+	logger, err := logging.NewLogger(opt)
+	assert.NoError(t, err)
+
+	logger.Debugf("在 [%s] 处创建 KeyStore...", "/root/exp/")
+	logger.Infof("Creating KeyStore at [%s]...", "/root/exp/")
+	logger.Warnf("Creating KeyStore at [%s]...", "/root/exp/")
+	logger.Errorf("Creating KeyStore at [%s]...", "/root/exp/")
 }

@@ -72,3 +72,27 @@ encrypted, err := sw.AESCBCPKCS7Encrypt(key, plaintext)
 ```go
 decrypted, err := sw.AESCBCPKCS7Decrypt(key, encrypted)
 ```
+
+## 3 接口介绍
+
+`Key` 接口定义了 `BCCSP` 的密钥功能，该接口的定义如下所示：
+
+```go
+type Key interface {
+	Bytes() ([]byte, error)
+	SKI() []byte
+	Symmetric() bool
+	Private() bool
+	PublicKey() (Key, error)
+}
+```
+
+接口中每个方法的用处介绍如下：
+
+| 方法名 | 用处 |
+|:---:|:---:|
+|Bytes() ([]byte, error)|只有可导出的私钥和公钥能调用此方法，如果 AES 密钥是可导出的，那么直接返回密钥本身的值，对于其他公钥，例如 ECDSA 的公钥，则返回公钥的编码值|
+|SKI() []byte|返回密钥的标识符，一般是密钥的哈希值，私钥的话，则是返回其公钥的哈希值|
+|Symmetric() bool|返回一个布尔值，以表示该密钥是否是对称密钥|
+|Private() bool|返回一个布尔值，一表示该密钥是否是私钥|
+|PublicKey() (Key, bool)|返回非对称密钥的私钥的公钥，不能对对称密钥调用此方法，不然会报错|

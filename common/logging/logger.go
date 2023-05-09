@@ -12,10 +12,15 @@ import (
 
 type Logger interface {
 	Debug(msg string, kvs ...interface{})
+	Debugf(format string, args ...interface{})
 	Info(msg string, kvs ...interface{})
+	Infof(format string, args ...interface{})
 	Warn(msg string, kvs ...interface{})
+	Warnf(format string, args ...interface{})
 	Error(msg string, kvs ...interface{})
+	Errorf(format string, args ...interface{})
 	Panic(msg string, kvs ...interface{})
+	Panicf(format string, args ...interface{})
 
 	SetModule(module string, level LogLevel)
 	DeriveChildLogger(module string) Logger
@@ -38,6 +43,14 @@ type logger struct {
 	formatter      Formatter
 	formatSelector string // 选择以什么格式输出日志，json 或者 terminal。
 	writer         io.Writer
+}
+
+func MustNewLogger(opts ...Option) Logger {
+	l, err := NewLogger(opts...)
+	if err != nil {
+		panic(err)
+	}
+	return l
 }
 
 func NewLogger(opts ...Option) (Logger, error) {
@@ -124,9 +137,21 @@ func (l *logger) Debug(msg string, kvs ...interface{}) {
 	l.mutex.RUnlock()
 }
 
+func (l *logger) Debugf(format string, args ...interface{}) {
+	l.mutex.RLock()
+	l.log(fmt.Sprintf(format, args...), DebugLevel, nil)
+	l.mutex.RUnlock()
+}
+
 func (l *logger) Info(msg string, kvs ...interface{}) {
 	l.mutex.RLock()
 	l.log(msg, InfoLevel, kvs)
+	l.mutex.RUnlock()
+}
+
+func (l *logger) Infof(format string, args ...interface{}) {
+	l.mutex.RLock()
+	l.log(fmt.Sprintf(format, args...), InfoLevel, nil)
 	l.mutex.RUnlock()
 }
 
@@ -136,9 +161,21 @@ func (l *logger) Warn(msg string, kvs ...interface{}) {
 	l.mutex.RUnlock()
 }
 
+func (l *logger) Warnf(format string, args ...interface{}) {
+	l.mutex.RLock()
+	l.log(fmt.Sprintf(format, args...), WarnLevel, nil)
+	l.mutex.RUnlock()
+}
+
 func (l *logger) Error(msg string, kvs ...interface{}) {
 	l.mutex.RLock()
 	l.log(msg, ErrorLevel, kvs)
+	l.mutex.RUnlock()
+}
+
+func (l *logger) Errorf(format string, args ...interface{}) {
+	l.mutex.RLock()
+	l.log(fmt.Sprintf(format, args...), ErrorLevel, nil)
 	l.mutex.RUnlock()
 }
 
@@ -147,6 +184,13 @@ func (l *logger) Panic(msg string, kvs ...interface{}) {
 	l.log(msg, PanicLevel, kvs)
 	l.mutex.RUnlock()
 	panic(msg)
+}
+
+func (l *logger) Panicf(format string, args ...interface{}) {
+	l.mutex.RLock()
+	l.log(fmt.Sprintf(format, args...), PanicLevel, nil)
+	l.mutex.RUnlock()
+	panic(fmt.Sprintf(format, args...))
 }
 
 func (l *logger) log(msg string, level LogLevel, keyValues []interface{}) {
