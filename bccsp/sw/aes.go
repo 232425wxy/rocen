@@ -21,7 +21,7 @@ func (key *aesKey) Bytes() ([]byte, error) {
 	if key.exportable {
 		return key.key, nil
 	}
-	return nil, errors.New("Not supported.")
+	return nil, errors.New("not supported")
 }
 
 func (key *aesKey) SKI() []byte {
@@ -40,5 +40,5 @@ func (key *aesKey) Private() bool {
 }
 
 func (key *aesKey) PublicKey() (bccsp.Key, error) {
-	return nil, errors.New("Cannot call this method on a symmetric key.")
+	return nil, errors.New("cannot call this method on a symmetric key")
 }

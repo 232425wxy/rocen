@@ -20,7 +20,7 @@ type ecdsaPrivateKey struct {
 var _ = bccsp.Key(&ecdsaPrivateKey{})
 
 func (key *ecdsaPrivateKey) Bytes() ([]byte, error) {
-	return nil, errors.New("Not supported.")
+	return nil, errors.New("not supported")
 }
 
 func (key *ecdsaPrivateKey) SKI() []byte {
@@ -50,7 +50,6 @@ func (key *ecdsaPrivateKey) PublicKey() (bccsp.Key, error) {
 	}
 	return &ecdsaPublicKey{publicKey: &key.privateKey.PublicKey}, nil
 }
-
 
 type ecdsaPublicKey struct {
 	publicKey *ecdsa.PublicKey

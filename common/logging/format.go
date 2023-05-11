@@ -184,7 +184,7 @@ func (tf TimeFormatter) Format(w io.Writer, e Entry) {
 	if tf.layout != "" {
 		t = e.Time.Format(tf.layout)
 	} else {
-		t = e.Time.Format("2006-01-02T15:04:05.999Z07:00")
+		t = e.Time.Format("2006-01-02 15:04:05.000 CST")
 	}
 	switch e.FormatSelector {
 	case "terminal", "":

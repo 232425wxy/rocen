@@ -61,6 +61,6 @@ type BCCSP interface {
 
 type KeyStore interface {
 	ReadOnly() bool
-	LoadKey(ski []byte) (key Key, err error)
+	GetKey(ski []byte) (key Key, err error)
 	StoreKey(key Key) (err error)
 }

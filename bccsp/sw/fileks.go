@@ -91,8 +91,8 @@ func (ks *fileBasedKeyStore) ReadOnly() bool {
 }
 
 ///////////////////////////////////////////////////////////////////
-// LoadKey 从 KeyStore 中加载与 SKI 对应的密钥。
-func (ks *fileBasedKeyStore) LoadKey(ski []byte) (bccsp.Key, error) {
+// GetKey 从 KeyStore 中加载与 SKI 对应的密钥。
+func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 	if len(ski) == 0 {
 		return nil, errors.New("invalid SKI, it must be different from nil")
 	}
@@ -172,7 +172,7 @@ func (ks *fileBasedKeyStore) StoreKey(key bccsp.Key) (err error) {
 
 // /////////////////////////////////////////////////////////////////
 // searchKeystoreForSKI 从存储密钥的文件夹里寻找 SKI 对的上的密钥。
-func (ks fileBasedKeyStore) searchKeystoreForSKI(ski []byte) (key bccsp.Key, err error) {
+func (ks *fileBasedKeyStore) searchKeystoreForSKI(ski []byte) (key bccsp.Key, err error) {
 	files, _ := os.ReadDir(ks.path)
 	for _, f := range files {
 		if f.IsDir() {
